@@ -6,10 +6,12 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/auenc/gTeller/filter"
-	"github.com/auenc/gTeller/items"
 )
+
+type initResponse struct {
+	Token     string
+	PublicKey string
+}
 
 //Request is an object that processes the api request
 type Request struct {
@@ -17,31 +19,6 @@ type Request struct {
 	URL         string
 	method      string
 	RequestData interface{}
-}
-
-const (
-	ItemURI = "item/"
-)
-
-//Items configures the Request object to point towards the item API endpoints
-func (req *Request) Items(filter filter.ItemsFilter) ([]items.Item, error) {
-	var list []items.Item
-
-	//configuring request
-	req.URL = req.URL + ItemURI
-	req.method = "POST"
-	req.RequestData = ListItemsRequest{Filter: filter}
-
-	resp, err := req.List()
-	if err != nil {
-		return list, err
-	}
-	err = resp.Get(&list)
-	if err != nil {
-		return list, err
-	}
-
-	return list, nil
 }
 
 //List calls the list action of the specified end point
@@ -58,13 +35,33 @@ func (req *Request) List() (Response, error) {
 
 	return req.Send()
 }
+
+func (req *Request) Authorise(username, password string) (AuthorisedRequest, error) {
+
+	auth := AuthorisedRequest{Username: username, Password: password, Request: req}
+
+	err := auth.Init()
+	if err != nil {
+		return auth, err
+	}
+
+	return auth, nil
+}
+
 func (req *Request) Send() (Response, error) {
 	var response Response
 	var data []byte
 	var err error
 	//If there is data to be sent
 	if req.RequestData != nil {
-		data, err = json.Marshal(req.RequestData)
+
+		reqD := struct {
+			RequestData interface{}
+		}{
+			req.RequestData,
+		}
+
+		data, err = json.Marshal(reqD)
 		if err != nil {
 			return response, err
 		}
@@ -83,7 +80,7 @@ func (req *Request) Send() (Response, error) {
 	}
 
 	//Creating request
-	r, err := http.NewRequest(req.method, req.Host+req.URL, bytes.NewBuffer(data))
+	r, err := http.NewRequest(req.method, req.Host+req.URL, bytes.NewReader(data))
 	if err != nil {
 		return response, err
 	}
@@ -100,6 +97,10 @@ func (req *Request) Send() (Response, error) {
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return response, errors.New(string(resp.Status))
+	}
 
 	response = Response{URL: req.URL, Method: req.method,
 		RequestData: req.RequestData, ResponseCode: resp.StatusCode, ResponseData: body}

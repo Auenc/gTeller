@@ -19,6 +19,18 @@ type ShippingDetails struct {
 	Tracking string
 }
 
+type ParseableShippingDetails struct {
+	TypeID   string
+	Town     string
+	Country  string
+	Line1    string
+	City     string
+	PostCode string
+	Name     string
+	Phone    string
+	Tracking string
+}
+
 type ByPrice []ShippingType
 
 type ShippingRepository interface {

@@ -12,3 +12,11 @@ type ListItemsRequest struct {
 type ListItemsResponse struct {
 	Items []items.Item
 }
+
+type AddItemRequest struct {
+	Name       string
+	Price      string
+	DiscountID string
+	Options    []string
+	ImageURI   string
+}
