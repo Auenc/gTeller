@@ -163,28 +163,9 @@ func (req *AuthorisedRequest) Send() (Response, error) {
 
 //Init returns a public key and a token. This should be removed before deploy
 func (req *AuthorisedRequest) Init() error {
-	var token, key string
 	var pubKey rsa.PublicKey
 
-	reqI := Request{Host: req.Request.Host}
-	reqI.URL = reqI.URL + "init"
-	reqI.method = "GET"
-
-	resp, err := reqI.Send()
-	if err != nil {
-		return err
-
-	}
-	respData := initResponse{}
-	err = resp.Get(&respData)
-	if err != nil {
-		return err
-	}
-
-	key = respData.PublicKey
-	token = respData.Token
-
-	pubKeyRaw := auth.DencString(key)
+	pubKeyRaw := auth.DencString(req.Token)
 
 	if tmp, err := x509.ParsePKIXPublicKey([]byte(pubKeyRaw)); err == nil {
 		pTmp := tmp.(*rsa.PublicKey)
@@ -194,7 +175,6 @@ func (req *AuthorisedRequest) Init() error {
 	}
 
 	req.PublicKey = pubKey
-	req.Token = token
 
 	return nil
 }

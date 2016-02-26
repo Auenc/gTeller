@@ -9,7 +9,7 @@ import (
 )
 
 func TestShippingTypeList(t *testing.T) {
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	req := gt.ShippingTypes()
 	req.RequestData = ListShippingTypeRequest{}
@@ -33,7 +33,7 @@ func TestShippingTypeList(t *testing.T) {
 }
 
 func TestShippingTypeAdd(t *testing.T) {
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//New ShippingType stuff
 	name := "TEST SHIPPING TYPE"
@@ -42,7 +42,7 @@ func TestShippingTypeAdd(t *testing.T) {
 	//Creating inital request
 	req := gt.ShippingTypes()
 	//Creating authorised request
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", apiKey)
 	if err != nil {
 		t.Errorf("TestShippingTypeAdd::Unexpected error creatign authorised request %v", err)
 	}
@@ -61,7 +61,7 @@ func TestShippingTypeAdd(t *testing.T) {
 
 func TestShippingTypeUpdate(t *testing.T) {
 	//Creating gTeller object
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//Making sure there is at least one test status
 	TestShippingTypeAdd(t)
@@ -95,7 +95,7 @@ func TestShippingTypeUpdate(t *testing.T) {
 
 	//Updating gTeller
 	req = gt.ShippingTypes()
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", apiKey)
 	if err != nil {
 		t.Errorf("TestShippingTypeUpdate::Unexpected error while creatign authorised request %v", err)
 	}
@@ -139,7 +139,7 @@ func TestShippingTypeUpdate(t *testing.T) {
 
 func TestShippingTypeRemove(t *testing.T) {
 	//Creating gTeller object
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//Making sure there is something to delete
 	TestShippingTypeUpdate(t)
@@ -172,7 +172,7 @@ func TestShippingTypeRemove(t *testing.T) {
 
 	//Creating remove request
 	req = gt.ShippingTypes()
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", apiKey)
 	if err != nil {
 		t.Errorf("TestShippingTypeRemove::Unexpected error while creatign authorised request %v", err)
 	}

@@ -36,9 +36,10 @@ func (req *Request) List() (Response, error) {
 	return req.Send()
 }
 
-func (req *Request) Authorise(username, password string) (AuthorisedRequest, error) {
+func (req *Request) Authorise(username, password, key string) (AuthorisedRequest, error) {
 
-	auth := AuthorisedRequest{Username: username, Password: password, Request: req}
+	auth := AuthorisedRequest{Username: username, Password: password,
+		Request: req, Token: key}
 
 	err := auth.Init()
 	if err != nil {

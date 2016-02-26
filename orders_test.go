@@ -10,12 +10,16 @@ import (
 	"github.com/auenc/gTeller/shipping"
 )
 
+const (
+	apiKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDcJ7Ub2o52iYuAKVdKzZBEt1YMNQ75ofQYBMpvFj5JX5tNrQqgRgN66O2dYfOUQzXkl1MRQNN0ryvIsDgfvTT01TfQFMIOp03XpVNZ6Je6k/0T2ZgVDbZS4pW22tKoFf1OwgCMKIKKJw/u9dWg+FtP10wVf2dcbFnmxrmTMItRQwIDAQAB"
+)
+
 func TestOrderList(t *testing.T) {
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	req := gt.Orders()
 	req.RequestData = ListOrderRequest{}
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderList::Unexpected error authorising request %v", err)
 	}
@@ -39,7 +43,7 @@ func TestOrderList(t *testing.T) {
 }
 
 func TestOrderAdd(t *testing.T) {
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//New Order stuff
 	name := "Bob"
@@ -71,7 +75,7 @@ func TestOrderAdd(t *testing.T) {
 	//Creating inital request
 	req := gt.Orders()
 	//Creating authorised request
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderAdd::Unexpected error creatign authorised request %v", err)
 	}
@@ -90,7 +94,7 @@ func TestOrderAdd(t *testing.T) {
 
 func TestOrderUpdate(t *testing.T) {
 	//Creating gTeller object
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//Making sure there is at least one test status
 	TestOrderAdd(t)
@@ -102,7 +106,7 @@ func TestOrderUpdate(t *testing.T) {
 	//Getting shipping types
 	req := gt.Orders()
 	req.RequestData = ListOrderRequest{Filter: f1}
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderUpdate::Unexpected error authorising request %v", err)
 	}
@@ -131,7 +135,7 @@ func TestOrderUpdate(t *testing.T) {
 
 	//Updating gTeller
 	req = gt.Orders()
-	aReq, err = req.Authorise("lewis", "password")
+	aReq, err = req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderUpdate::Unexpected error while creatign authorised request %v", err)
 	}
@@ -156,7 +160,7 @@ func TestOrderUpdate(t *testing.T) {
 	//Getting shipping types
 	req = gt.Orders()
 	req.RequestData = ListOrderRequest{Filter: f2}
-	aReq, err = req.Authorise("lewis", "password")
+	aReq, err = req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderUpdate::Unexpected error authorising request %v", err)
 	}
@@ -179,7 +183,7 @@ func TestOrderUpdate(t *testing.T) {
 
 func TestOrderRemove(t *testing.T) {
 	//Creating gTeller object
-	gt := New("http://localhost:8081/api/", "nokey")
+	gt := New("http://localhost:8081/api/", apiKey)
 
 	//Making sure there is something to delete
 	TestOrderUpdate(t)
@@ -193,7 +197,7 @@ func TestOrderRemove(t *testing.T) {
 	//Getting shipping types
 	req := gt.Orders()
 	req.RequestData = ListOrderRequest{Filter: f1}
-	aReq, err := req.Authorise("lewis", "password")
+	aReq, err := req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderRemove::Unexpected error authorising request %v", err)
 	}
@@ -216,7 +220,7 @@ func TestOrderRemove(t *testing.T) {
 
 	//Creating remove request
 	req = gt.Orders()
-	aReq, err = req.Authorise("lewis", "password")
+	aReq, err = req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderRemove::Unexpected error while creatign authorised request %v", err)
 	}
@@ -236,7 +240,7 @@ func TestOrderRemove(t *testing.T) {
 	//Confirming types were removed
 	req = gt.Orders()
 	req.RequestData = ListOrderRequest{Filter: f1}
-	aReq, err = req.Authorise("lewis", "password")
+	aReq, err = req.Authorise("lewis", "password", gt.APIKey)
 	if err != nil {
 		t.Errorf("TestOrderRemove::Unexpected error authorising request %v", err)
 	}
