@@ -1,0 +1,116 @@
+package requirements
+
+import (
+	"errors"
+	"fmt"
+	"reflect"
+)
+
+//TextRequirement is a requirement that accepts a string input
+type TextRequirement struct {
+	id        string
+	data      UserInput
+	condition Condition
+}
+
+//NewRequirementText returns a new TextRequirement
+func NewRequirementText(uuid string) (TextRequirement, error) {
+	return TextRequirement{id: uuid, data: nil}, nil
+}
+
+//ID returns the ID of the Requirement
+func (req *TextRequirement) ID() string {
+	return req.id
+}
+
+//Type returns an interger representing the type of Requirement
+func (req *TextRequirement) Type() int {
+	return RequirementText
+}
+
+//GetCondition returns the Condition applied to the Requirement
+func (req *TextRequirement) GetCondition() Condition {
+	return req.condition
+}
+
+//HasOptions returns false
+func (req *TextRequirement) HasOptions() bool {
+	return false
+}
+
+//Options returns an empty list of UserInput as TextInput has no options
+func (req *TextRequirement) Options() []UserInput {
+	var options []UserInput
+	return options
+}
+
+//Name returns the string "Text Requirement"
+func (req *TextRequirement) Name() string {
+	return "Text Requirement"
+}
+
+//Data is a method that provides the TextRequirement with a given UserInput
+func (req *TextRequirement) Data(data UserInput) error {
+	if data.For() != req.id {
+		return errors.New("Incompatible input given")
+	}
+
+	req.data = data
+
+	return nil
+}
+
+//Supported returns true if TextRequirement supports the given Condition
+func (req *TextRequirement) Supported(con Condition) bool {
+	if con != nil {
+		switch con.Type() {
+		case ConditionEqual:
+			return true
+		default:
+			return false
+		}
+	}
+	return false
+}
+
+//SetID sets the id of the Requirement to the specified storing
+func (req *TextRequirement) SetID(n string) {
+	req.id = n
+}
+
+//Condition states that input given for this requirement has to meet the given condition
+func (req *TextRequirement) Condition(con Condition) error {
+	if con != nil {
+		if !req.Supported(con) {
+			er := fmt.Sprintf("Condition %d not supported by %s", con.Type(), req.Name())
+			return errors.New(er)
+		}
+		req.condition = con
+	}
+
+	return nil
+}
+
+//Met returns true if the data != nil && data instanceof string && Condition.Valid(data)
+func (req *TextRequirement) Met() bool {
+	//emptyInput := new(UserInput)
+	//If data is empty requirement not met
+	if req.data == nil {
+		return false
+	}
+
+	//Check if data is string
+	if reflect.TypeOf(req.data.Data()).Name() != "string" {
+		return false
+	}
+
+	//If requirement has a condition
+	if req.condition != nil {
+		//If condition is not met
+		if !req.condition.Valid(req.data.Data()) {
+			return false
+		}
+	}
+	//Success
+	return true
+}

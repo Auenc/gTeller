@@ -8,6 +8,7 @@ import (
 
 	"github.com/auenc/gTeller-core/config"
 	"github.com/auenc/gTeller-core/databases"
+	"github.com/auenc/gTeller-core/requirements"
 )
 
 var (
@@ -76,7 +77,7 @@ func TestBasicItemFilter(t *testing.T) {
 	emptyCon := Condition{}
 	idFilter := Condition{ConditionEquals, desiredID}
 	filter := ItemsFilter{idFilter, emptyCon, emptyCon,
-		DiscountFilter{}, ItemOptionsFilter{}, emptyCon}
+		DiscountFilter{}, RequirementFilter{}, emptyCon}
 
 	items, err := db.ItemRepo().Items()
 	if err != nil {
@@ -327,5 +328,49 @@ func TestBasicEmailTemplateFilter(t *testing.T) {
 	if filtered[0].ID != desiredID {
 		t.Errorf("TestBasicEmailTemplateFilter::Expected order.ID to be %s but instead it was %s",
 			desiredID, filtered[0].ID)
+	}
+}
+
+func TestBasicRequirementConditionFilter(t *testing.T) {
+	var cons []requirements.Condition
+	equalCon, _ := requirements.NewConditionEqual("bob", "apple")
+	fake1, _ := requirements.NewConditionRegex("bob", "apple")
+	fake2, _ := requirements.NewConditionRegex("bob", "apple")
+	fake3, _ := requirements.NewConditionRegex("bob", "apple")
+
+	cons = append(cons, &fake1)
+	cons = append(cons, &fake2)
+	cons = append(cons, &fake3)
+	cons = append(cons, &equalCon)
+
+	typeFilter := Condition{ConditionEquals, requirements.ConditionEqual}
+	filter := RequirementConditionFilter{Type: typeFilter}
+
+	filtered := filter.Filter(cons)
+
+	if len(filtered) != 1 {
+		t.Errorf("Expected to only receive 1 condition but instead received %d", len(filtered))
+	}
+}
+
+func TestBasicUserInputFilter(t *testing.T) {
+	var inputs []requirements.UserInput
+	textCon := requirements.NewInputText("apple", "bob")
+	fake1 := requirements.NewInputText("apple", "jeff")
+	fake2 := requirements.NewInputText("apple", "Kat")
+	fake3 := requirements.NewInputText("apple", "Sioned")
+
+	inputs = append(inputs, &textCon)
+	inputs = append(inputs, &fake1)
+	inputs = append(inputs, &fake2)
+	inputs = append(inputs, &fake3)
+
+	forCondition := Condition{ConditionEquals, "bob"}
+	filter := UserInputFilter{For: forCondition}
+
+	filtered := filter.Filter(inputs)
+
+	if len(filtered) != 1 {
+		t.Errorf("Expected to only receive 1 condition but instead received %d", len(filtered))
 	}
 }

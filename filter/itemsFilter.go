@@ -7,12 +7,12 @@ import (
 )
 
 type ItemsFilter struct {
-	ID       Condition
-	Name     Condition
-	Price    Condition
-	Discount DiscountFilter
-	Options  ItemOptionsFilter
-	ImageURI Condition
+	ID           Condition
+	Name         Condition
+	Price        Condition
+	Discount     DiscountFilter
+	Requirements RequirementFilter
+	ImageURI     Condition
 }
 
 //Filter is a method that filters a given slice of items given the ItemsFilters Conditions
@@ -36,7 +36,8 @@ func (filter *ItemsFilter) Valid(item items.Item) bool {
 	valid := true
 	emptyCon := Condition{}
 	emptyDis := DiscountFilter{}
-	emptyOpt := ItemOptionsFilter{}
+	emptyOpt := RequirementFilter{}
+
 	fmt.Println("Pass 0")
 	//Checking if there is a filter for Status ID
 	if filter.ID != emptyCon {
@@ -79,10 +80,11 @@ func (filter *ItemsFilter) Valid(item items.Item) bool {
 	}
 	fmt.Println("Pass 4")
 	//Checking if there is a filter for Status Options
-	if filter.Options != emptyOpt {
+	if filter.Requirements != emptyOpt {
 		//Checking if Item matches Options filter.
 		//IF it doesn't, return false.
-		if !filter.Options.Valid(item.Options) {
+
+		if !filter.Requirements.Valid(item.Requirements...) {
 			valid = false
 			return valid
 		}

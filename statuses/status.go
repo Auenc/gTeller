@@ -1,7 +1,7 @@
 package status
 
 import (
-	"github.com/auenc/gTeller-core/email"
+	"github.com/auenc/gTeller/email"
 )
 
 //Status is an object that represents an order status

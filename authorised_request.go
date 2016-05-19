@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/auenc/gTeller/util"
-	"github.com/kn100/studio9/auth"
 )
 
 //AuthorisedRequest is an object that represents a request that requires a User
@@ -165,7 +164,7 @@ func (req *AuthorisedRequest) Send() (Response, error) {
 func (req *AuthorisedRequest) Init() error {
 	var pubKey rsa.PublicKey
 
-	pubKeyRaw := auth.DencString(req.Token)
+	pubKeyRaw := util.DencString(req.Token)
 
 	if tmp, err := x509.ParsePKIXPublicKey([]byte(pubKeyRaw)); err == nil {
 		pTmp := tmp.(*rsa.PublicKey)

@@ -35,3 +35,23 @@ type ListShippingDetailsRequest struct {
 type ListShippingDetailsResponse struct {
 	Details []shipping.ShippingDetails
 }
+
+type AddShippingDetailsRequest struct {
+	TypeID   string
+	Town     string
+	Country  string
+	Line1    string
+	City     string
+	PostCode string
+	Name     string
+	Phone    string
+	Tracking string
+}
+
+type UpdateShippingDetailsRequest struct {
+	ShippingDetails []shipping.ShippingDetails
+}
+
+type RemoveShippingDetailsRequest struct {
+	IDs []string
+}

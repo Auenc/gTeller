@@ -5,15 +5,16 @@ import (
 	"strconv"
 
 	"github.com/auenc/gTeller-core/discounts"
+	"github.com/auenc/gTeller-core/requirements"
 )
 
 type Item struct {
-	ID         string              `form:"id" binding:"required"`
-	NameRaw    string              `form:"name" binding:"required"`
-	PriceRaw   string              `form:"price" binding:"required"`
-	DicountRaw *discounts.Discount `form:"-"`
-	Options    []OptionCategory
-	ImageURI   string `form:"image" binding:"required"`
+	ID           string              `form:"id" binding:"required"`
+	NameRaw      string              `form:"name" binding:"required"`
+	PriceRaw     string              `form:"price" binding:"required"`
+	DicountRaw   *discounts.Discount `form:"-"`
+	Requirements []requirements.Requirement
+	ImageURI     string `form:"image" binding:"required"`
 }
 
 //ID is a function to return the items id in the string format.

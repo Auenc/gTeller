@@ -8,6 +8,21 @@ import (
 	"github.com/auenc/gTeller/statuses"
 )
 
+//ParseableOrder is a data object that can be parsed into an Order object.
+type ParseableOrder struct {
+	ID              string
+	FriendlyID      string
+	ShippingDetails shipping.ShippingDetails
+	Items           []OrderItem
+	Status          status.Status
+	Notes           string
+	Payed           bool
+	CustomerID      string
+	TimeCreated     int64
+	Discount        discounts.ParseableDiscount
+	Archived        bool
+}
+
 type Order struct {
 	ID              string
 	FriendlyID      string
@@ -26,7 +41,7 @@ type OrderInfo struct {
 	ID              string
 	FriendlyID      string
 	ShippingDetails shipping.ShippingDetails
-	Items           []OrderItemInfo
+	Items           []OrderItem
 	Status          status.Status
 	Total           float64
 	Notes           string
@@ -36,56 +51,11 @@ type OrderInfo struct {
 	Archived        bool
 }
 
-//ParseableOrder is a data object that can be parsed into an Order object.
-type ParseableOrder struct {
-	ID              string
-	FriendlyID      string
-	ShippingDetails shipping.ShippingDetails
-	Items           []OrderItem
-	Status          status.Status
-	Notes           string
-	Payed           bool
-	CustomerID      string
-	TimeCreated     int64
-	Discount        discounts.ParseableDiscount
-	Archived        bool
-}
-
-//Parse parses data within ParseableOrder and returns an Order object
-func (parse *ParseableOrder) Parse() Order {
-	t := time.Unix(parse.TimeCreated, 0)
-	dis := parse.Discount.Parse()
-	return Order{ID: parse.ID, FriendlyID: parse.FriendlyID,
-		ShippingDetails: parse.ShippingDetails, Items: parse.Items,
-		Status: parse.Status, Notes: parse.Notes, Payed: parse.Payed,
-		CustomerID: parse.CustomerID, TimeCreated: t,
-		Discount: dis, Archived: parse.Archived}
-}
-
-//Parsable returns an instance of ParseableOrder derived from the Order object
-func (order *Order) Parsable() (ParseableOrder, error) {
-	var p ParseableOrder
-
-	tmp := &order.Discount
-	pDis, err := tmp.Parsable()
-	if err != nil {
-		return p, err
-	}
-
-	return ParseableOrder{ID: order.ID, FriendlyID: order.FriendlyID,
-		ShippingDetails: order.ShippingDetails, Items: order.Items,
-		Status: order.Status, Notes: order.Notes, Payed: order.Payed,
-		CustomerID: order.CustomerID, TimeCreated: order.TimeCreated.Unix(),
-		Discount: pDis, Archived: order.Archived}, nil
-}
-
-/*func (order *Order) Total(itemRepo items.ItemRepository) (float64, error) {
+func (order *Order) Total() (float64, error) {
 	var total float64
 	for _, item := range order.Items {
-		tmp, err := item.Price(itemRepo)
-		if err != nil {
-			return total, err
-		}
+		tmp := item.Price
+
 		total += tmp
 	}
 
@@ -104,24 +74,41 @@ func (order *Order) Parsable() (ParseableOrder, error) {
 	return total, nil
 }
 
-func (order *Order) Info(itemRepo items.ItemRepository) (OrderInfo, error) {
+func (order *Order) Parseable() (ParseableOrder, error) {
+	var p ParseableOrder
+	timeCreated := order.TimeCreated.Unix()
+	parseDiscount, err := order.Discount.Parsable()
+	if err != nil {
+		return p, err
+	}
+	p = ParseableOrder{ID: order.ID, FriendlyID: order.FriendlyID,
+		ShippingDetails: order.ShippingDetails, Items: order.Items,
+		Status: order.Status, Notes: order.Notes, Payed: order.Payed,
+		CustomerID: order.CustomerID, TimeCreated: timeCreated,
+		Discount: parseDiscount, Archived: order.Archived}
+	return p, nil
+}
+
+func (order *ParseableOrder) Parse() Order {
+	discount := order.Discount.Parse()
+	created := time.Unix(order.TimeCreated, 0)
+
+	orderA := Order{ID: order.ID, FriendlyID: order.FriendlyID,
+		ShippingDetails: order.ShippingDetails, Items: order.Items, Status: order.Status,
+		Notes: order.Notes, Payed: order.Payed, CustomerID: order.CustomerID,
+		TimeCreated: created, Archived: order.Archived, Discount: discount}
+
+	return orderA
+}
+
+func (order *Order) Info() (OrderInfo, error) {
 	var info OrderInfo
-	total, err := order.Total(itemRepo)
+	total, err := order.Total()
 	if err != nil {
 		return info, err
 	}
 
-	itemInfo := make([]OrderItemInfo, len(order.Items))
-	for i, item := range order.Items {
-		tmp, err := item.Info(itemRepo)
-		if err != nil {
-			return info, err
-		}
-		itemInfo[i] = tmp
-	}
-
-	info = OrderInfo{order.ID, order.FriendlyID, order.ShippingDetails, itemInfo, order.Status, total, order.Notes, order.Payed, order.CustomerID, order.TimeCreated, order.Archived}
+	info = OrderInfo{order.ID, order.FriendlyID, order.ShippingDetails, order.Items, order.Status, total, order.Notes, order.Payed, order.CustomerID, order.TimeCreated, order.Archived}
 
 	return info, nil
 }
-*/
