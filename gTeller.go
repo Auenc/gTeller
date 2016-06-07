@@ -9,6 +9,7 @@ const (
 	StatusURI          = "status/"
 	EmailTemplateURI   = "email/template/"
 	UserURI            = "user/"
+	RequirementURI     = "requirement/"
 )
 
 //GTeller is an object that holds config values and grants access to methods to
@@ -82,6 +83,14 @@ func (gt *GTeller) EmailTemplates() Request {
 func (gt *GTeller) User() Request {
 	req := Request{Host: gt.Host}
 	req.URL = req.URL + UserURI
+	req.method = "POST"
+	return req
+}
+
+//Requirements returns a Request object that is configured to the
+func (gt *GTeller) Requirements() Request {
+	req := Request{Host: gt.Host}
+	req.URL = req.URL + RequirementURI
 	req.method = "POST"
 	return req
 }
