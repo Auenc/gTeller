@@ -70,7 +70,13 @@ func (req *TextRequirement) Name() string {
 }
 
 //Data is a method that provides the TextRequirement with a given UserInput
-func (req *TextRequirement) Data(data UserInput) error {
+func (req *TextRequirement) Data(dataList ...UserInput) error {
+	if len(dataList) == 0 {
+		return errors.New("No data provided")
+	}
+
+	data := dataList[0]
+
 	if data.For() != req.id {
 		return errors.New("Incompatible input given")
 	}

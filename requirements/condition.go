@@ -12,6 +12,8 @@ const (
 	ConditionRegex = 2
 	//ConditionContains represents the ConditionContains object
 	ConditionContains = 3
+	//ConditonMultipleEquals represents a condition which has to equal a list of specifed inputs
+	ConditonMultipleEquals = 4
 )
 
 //Condition is an interface that exists to allow for complex conditions that can
@@ -22,7 +24,7 @@ type Condition interface {
 	ID() string
 	SetID(string)
 	Type() int
-	Valid(interface{}) bool
+	Valid(...interface{}) bool
 	Condition() interface{}
 	SetTargets(string, []UserInput) error
 	Name() string
@@ -36,6 +38,8 @@ func Conditions() []Condition {
 
 	cons = append(cons, &EqualCondition{})
 	cons = append(cons, &RegexCondition{})
+	cons = append(cons, &ContainsCondition{})
+	cons = append(cons, &MultipleEqualsCondition{})
 
 	return cons
 }
@@ -49,6 +53,8 @@ func LoadCondition(t int) (Condition, error) {
 		return &RegexCondition{kind: t}, nil
 	case ConditionContains:
 		return &ContainsCondition{kind: t}, nil
+	case ConditonMultipleEquals:
+		return &MultipleEqualsCondition{kind: t}, nil
 	default:
 		s := strconv.Itoa(t)
 		return nil, errors.New("condition type not found " + s)

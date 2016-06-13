@@ -7,6 +7,8 @@ const (
 	RequirementText = 1
 	//RequirementItemChoice is an integer that represents a Item Choice Requirement
 	RequirementItemChoice = 2
+	//RequirementItems is a requirement that states the input must be the list of specifed inputs
+	RequirementItems = 3
 )
 
 //Requirement is an interface that allows for complex requirements that can be
@@ -18,7 +20,7 @@ type Requirement interface {
 	HasOptions() bool
 	Options() []UserInput
 	SetOptions([]UserInput) error
-	Data(UserInput) error
+	Data(...UserInput) error
 	Met() bool
 	Condition(Condition) error
 	Supported(Condition) bool
@@ -35,6 +37,8 @@ func LoadRequirement(t int) (Requirement, error) {
 		return &TextRequirement{}, nil
 	case RequirementItemChoice:
 		return &ItemChoiceRequirement{}, nil
+	case RequirementItems:
+		return &ItemsRequirement{}, nil
 	default:
 		return nil, errors.New("Unknown type")
 	}

@@ -51,7 +51,13 @@ func (req *TextChoiceRequirement) Name() string {
 }
 
 //Data is a method that provides the TextChoiceRequirement with a given UserInput
-func (req *TextChoiceRequirement) Data(data UserInput) error {
+func (req *TextChoiceRequirement) Data(dataList ...UserInput) error {
+	if len(dataList) == 0 {
+		return errors.New("No data provided")
+	}
+
+	data := dataList[0]
+
 	if data.For() != req.id {
 		req.data = nil
 		return errors.New("Incompatible input given")

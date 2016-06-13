@@ -6,8 +6,8 @@ import (
 	"reflect"
 )
 
-//ItemChoiceRequirement is a requirement that accepts a string input
-type ItemChoiceRequirement struct {
+//ItemsRequirement is a requirement that accepts a string input
+type ItemsRequirement struct {
 	id        string
 	reference string
 	choices   []UserInput
@@ -15,54 +15,53 @@ type ItemChoiceRequirement struct {
 	condition Condition
 }
 
-//NewRequirementItemChoice returns a new TextChoiceRequirement
-func NewRequirementItemChoice(uuid string, choices []UserInput) (ItemChoiceRequirement, error) {
-	return ItemChoiceRequirement{id: uuid, data: nil, choices: choices}, nil
+//NewRequirementItems returns a new TextChoiceRequirement
+func NewRequirementItems(uuid string, choices []UserInput) (ItemsRequirement, error) {
+	return ItemsRequirement{id: uuid, data: nil, choices: choices}, nil
 }
 
 //Reference returns the friendly reference that the requirement is known as
-func (req *ItemChoiceRequirement) Reference() string {
+func (req *ItemsRequirement) Reference() string {
 	return req.reference
 }
 
 //SetReference sets the requirements reference to the specified string
-func (req *ItemChoiceRequirement) SetReference(ref string) {
+func (req *ItemsRequirement) SetReference(ref string) {
 	req.reference = ref
 }
 
 //ID returns the ID of the Requirement
-func (req *ItemChoiceRequirement) ID() string {
+func (req *ItemsRequirement) ID() string {
 	return req.id
 }
 
 //Type returns an interger representing the type of Requirement
-func (req *ItemChoiceRequirement) Type() int {
-	return RequirementItemChoice
+func (req *ItemsRequirement) Type() int {
+	return RequirementItems
 }
 
 //GetCondition returns the Condition applied to the Requirement
-func (req *ItemChoiceRequirement) GetCondition() Condition {
+func (req *ItemsRequirement) GetCondition() Condition {
 	return req.condition
 }
 
 //HasOptions returns false
-func (req *ItemChoiceRequirement) HasOptions() bool {
+func (req *ItemsRequirement) HasOptions() bool {
 	return true
 }
 
 //Options returns a list of the items possible to choose
-func (req *ItemChoiceRequirement) Options() []UserInput {
+func (req *ItemsRequirement) Options() []UserInput {
 
 	return req.choices
 }
 
-//SetOptions sets the options associated with ItemChoiceRequirement to the specified inputs
-func (req *ItemChoiceRequirement) SetOptions(options []UserInput) error {
+//SetOptions sets the options associated with ItemsRequirement to the specified inputs
+func (req *ItemsRequirement) SetOptions(options []UserInput) error {
 	req.choices = options
 	if req.GetCondition() != nil {
 		cond := req.GetCondition()
 
-		fmt.Printf("Giving condition targets %v\n", options)
 		err := cond.SetTargets(req.ID(), options)
 		if err != nil {
 			return err
@@ -72,17 +71,16 @@ func (req *ItemChoiceRequirement) SetOptions(options []UserInput) error {
 }
 
 //Name returns the string "Item choice requirement"
-func (req *ItemChoiceRequirement) Name() string {
-	return "Item Choice Requirement"
+func (req *ItemsRequirement) Name() string {
+	return "Items Requirement"
 }
 
-//Data is a method that provides the ItemChoiceRequirement with a given UserInput
-func (req *ItemChoiceRequirement) Data(dataList ...UserInput) error {
+//Data is a method that provides the ItemsRequirement with a given UserInput
+func (req *ItemsRequirement) Data(dataList ...UserInput) error {
 	if len(dataList) == 0 {
-		return errors.New("No data provided")
+		return errors.New("No data given")
 	}
 	data := dataList[0]
-
 	if data.For() != req.id {
 		req.data = nil
 		return errors.New("Incompatible input given")
@@ -105,9 +103,9 @@ func (req *ItemChoiceRequirement) Data(dataList ...UserInput) error {
 }
 
 //Supported returns true if TextChoiceRequirement supports the given Condition
-func (req *ItemChoiceRequirement) Supported(con Condition) bool {
+func (req *ItemsRequirement) Supported(con Condition) bool {
 	switch con.Type() {
-	case ConditionContains:
+	case ConditonMultipleEquals:
 		return true
 	default:
 		return false
@@ -115,12 +113,12 @@ func (req *ItemChoiceRequirement) Supported(con Condition) bool {
 }
 
 //SetID sets the id of the Requirement to the specified storing
-func (req *ItemChoiceRequirement) SetID(n string) {
+func (req *ItemsRequirement) SetID(n string) {
 	req.id = n
 }
 
 //Condition states that input given for this requirement has to meet the given condition
-func (req *ItemChoiceRequirement) Condition(con Condition) error {
+func (req *ItemsRequirement) Condition(con Condition) error {
 	if !req.Supported(con) {
 		er := fmt.Sprintf("Condition %d not supported by %s", con.Type(), req.Name())
 		return errors.New(er)
@@ -130,12 +128,12 @@ func (req *ItemChoiceRequirement) Condition(con Condition) error {
 	return nil
 }
 
-func (req *ItemChoiceRequirement) GetData() UserInput {
+func (req *ItemsRequirement) GetData() UserInput {
 	return req.data
 }
 
 //Met returns true if the data != nil && data instanceof string && Condition.Valid(data)
-func (req *ItemChoiceRequirement) Met() bool {
+func (req *ItemsRequirement) Met() bool {
 	//emptyInput := new(UserInput)
 	//If data is empty requirement not met
 	if req.data == nil {

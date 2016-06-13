@@ -92,8 +92,13 @@ func (con *ContainsCondition) Type() int {
 }
 
 //Valid returns true if data is int && data == target
-func (con *ContainsCondition) Valid(data interface{}) bool {
+func (con *ContainsCondition) Valid(dataList ...interface{}) bool {
 	valid := false
+	if len(dataList) == 0 {
+		return false
+	}
+
+	data := dataList[0]
 
 	for _, el := range con.targets {
 		if reflect.DeepEqual(el, data) {

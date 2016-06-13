@@ -89,7 +89,13 @@ func (con *RegexCondition) Type() int {
 }
 
 //Valid returns true if given input matches the previously stated regex pattern
-func (con *RegexCondition) Valid(data interface{}) bool {
+func (con *RegexCondition) Valid(dataList ...interface{}) bool {
+	if len(dataList) == 0 {
+		return false
+	}
+
+	data := dataList[0]
+
 	if s, ok := data.(string); ok {
 		return con.pattern.MatchString(s)
 	}

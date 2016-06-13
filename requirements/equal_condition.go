@@ -76,7 +76,12 @@ func (con *EqualCondition) Type() int {
 }
 
 //Valid returns true if data is int && data == target
-func (con *EqualCondition) Valid(data interface{}) bool {
+func (con *EqualCondition) Valid(dataList ...interface{}) bool {
+	if len(dataList) == 0 {
+		return false
+	}
+	data := dataList[0]
+
 	return reflect.DeepEqual(con.target, data)
 }
 
