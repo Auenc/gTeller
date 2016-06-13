@@ -10,6 +10,8 @@ const (
 	ConditionEqual = 1
 	//ConditionRegex represents the RegexCondition object
 	ConditionRegex = 2
+	//ConditionContains represents the ConditionContains object
+	ConditionContains = 3
 )
 
 //Condition is an interface that exists to allow for complex conditions that can
@@ -22,9 +24,10 @@ type Condition interface {
 	Type() int
 	Valid(interface{}) bool
 	Condition() interface{}
+	SetTargets(string, []UserInput) error
 	Name() string
 	Save() (string, error)
-	Load([]byte) error
+	Load(string, []byte) error
 }
 
 //Conditions returns a slice of all available Condition objects
@@ -44,6 +47,8 @@ func LoadCondition(t int) (Condition, error) {
 		return &EqualCondition{kind: t}, nil
 	case ConditionRegex:
 		return &RegexCondition{kind: t}, nil
+	case ConditionContains:
+		return &ContainsCondition{kind: t}, nil
 	default:
 		s := strconv.Itoa(t)
 		return nil, errors.New("condition type not found " + s)

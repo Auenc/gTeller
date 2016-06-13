@@ -2,6 +2,7 @@ package requirements
 
 import (
 	"encoding/json"
+	"errors"
 	"regexp"
 )
 
@@ -37,13 +38,31 @@ func (con *RegexCondition) ID() string {
 	return con.id
 }
 
+//SetTargets takes the first element of the specified array and sets it to the regex Pattern provided the first element is a regex string
+func (con *RegexCondition) SetTargets(req string, targets []UserInput) error {
+	if len(targets) > 0 {
+		if tmp, err := targets[0].Data().(string); !err {
+			con.patternString = tmp
+
+			reg, err := regexp.Compile(con.patternString)
+			if err != nil {
+				return err
+			}
+			con.pattern = reg
+		} else {
+			return errors.New("Target needs to be a regex string")
+		}
+	}
+	return nil
+}
+
 //Condition returns the interface that has to be met
 func (con *RegexCondition) Condition() interface{} {
 	return con.patternString
 }
 
 //Load loads a condition based of a provided JSON byte slice
-func (con *RegexCondition) Load(src []byte) error {
+func (con *RegexCondition) Load(req string, src []byte) error {
 	var data regexConditionSave
 	if err := json.Unmarshal(src, &data); err != nil {
 		return err

@@ -10,12 +10,27 @@ import (
 type TextRequirement struct {
 	id        string
 	data      UserInput
+	reference string
 	condition Condition
 }
 
 //NewRequirementText returns a new TextRequirement
 func NewRequirementText(uuid string) (TextRequirement, error) {
 	return TextRequirement{id: uuid, data: nil}, nil
+}
+
+//Reference returns the friendly reference the requirement is known as
+func (req *TextRequirement) Reference() string {
+	return req.reference
+}
+
+//SetReference sets the requirements reference to the specified string
+func (req *TextRequirement) SetReference(ref string) {
+	req.reference = ref
+}
+
+func (req *TextRequirement) GetData() UserInput {
+	return req.data
 }
 
 //ID returns the ID of the Requirement
@@ -42,6 +57,11 @@ func (req *TextRequirement) HasOptions() bool {
 func (req *TextRequirement) Options() []UserInput {
 	var options []UserInput
 	return options
+}
+
+//SetOptions does nothing for TextRequirement as TextRequirement has no options
+func (req *TextRequirement) SetOptions(options []UserInput) error {
+	return nil
 }
 
 //Name returns the string "Text Requirement"

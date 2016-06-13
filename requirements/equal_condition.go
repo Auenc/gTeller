@@ -2,6 +2,7 @@ package requirements
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 )
 
@@ -37,8 +38,18 @@ func (con *EqualCondition) Condition() interface{} {
 	return con.target
 }
 
+//SetTargets sets the target to the first element within the specified array of targets
+func (con *EqualCondition) SetTargets(req string, targets []UserInput) error {
+	if len(targets) > 0 {
+		con.target = targets[0]
+	} else {
+		return errors.New("Targets array is empty!")
+	}
+	return nil
+}
+
 //Load loads a condition based of a provided JSON byte slice
-func (con *EqualCondition) Load(src []byte) error {
+func (con *EqualCondition) Load(req string, src []byte) error {
 	var data equalConditionSave
 	if err := json.Unmarshal(src, &data); err != nil {
 		return err

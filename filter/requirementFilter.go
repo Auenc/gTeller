@@ -8,6 +8,7 @@ type RequirementFilter struct {
 	Condition RequirementConditionFilter
 	Name      Condition
 	Options   UserInputFilter
+	Reference Condition
 }
 
 func (filter *RequirementFilter) Valid(reqs ...requirements.Requirement) bool {
@@ -48,6 +49,16 @@ func (filter *RequirementFilter) Valid(reqs ...requirements.Requirement) bool {
 			//Checking if requirementCondtion matches ConditionType filter.
 			//IF it doesn't, return false.
 			if !filter.Name.Valid(req.Name()) {
+				valid = false
+				return valid
+			}
+		}
+
+		//Reference condition
+		if filter.Reference != emptyCon {
+			//Checking if requirementCondtion matches ConditionType filter.
+			//IF it doesn't, return false.
+			if !filter.Reference.Valid(req.Reference()) {
 				valid = false
 				return valid
 			}
