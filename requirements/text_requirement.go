@@ -92,6 +92,8 @@ func (req *TextRequirement) Supported(con Condition) bool {
 		switch con.Type() {
 		case ConditionEqual:
 			return true
+		case ConditionRegex:
+			return true
 		default:
 			return false
 		}

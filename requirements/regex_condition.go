@@ -70,6 +70,15 @@ func (con *RegexCondition) Load(req string, src []byte) error {
 
 	//Change REGEX to work with being stored
 	con.id = data.ID
+	con.patternString = data.Pattern
+
+	reg, err := regexp.Compile(data.Pattern)
+	if err != nil {
+		return err
+	}
+
+	con.pattern = reg
+
 	return nil
 }
 
