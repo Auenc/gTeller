@@ -4,8 +4,8 @@ import (
 	//"errors"
 	"strconv"
 
-	"github.com/auenc/gTeller-core/discounts"
-	"github.com/auenc/gTeller-core/requirements"
+	"github.com/auenc/gTeller/discounts"
+	"github.com/auenc/gTeller/requirements"
 )
 
 type Item struct {
@@ -15,6 +15,26 @@ type Item struct {
 	DicountRaw   *discounts.Discount `form:"-"`
 	Requirements []requirements.Requirement
 	ImageURI     string `form:"image" binding:"required"`
+	Hidden       bool
+}
+
+func (item *Item) Parse() ParseableItem {
+	var discountID string
+	if item.DicountRaw != nil {
+		discountID = item.DicountRaw.ID
+	}
+
+	var reqIds []string
+	for _, el := range item.Requirements {
+		reqIds = append(reqIds, el.ID())
+	}
+
+	parse := ParseableItem{ID: item.ID, Name: item.NameRaw, Price: item.PriceRaw,
+		Discount: discountID, Requirements: reqIds, ImageURI: item.ImageURI,
+		Hidden: item.Hidden}
+
+	return parse
+
 }
 
 //ID is a function to return the items id in the string format.
@@ -103,5 +123,5 @@ func (item *Item) SetDiscount(discount *discounts.Discount) {
 }
 
 func NewItem(id string, name string, price string, discount *discounts.Discount, imageURI string) Item {
-	return Item{id, name, price, discount, nil, imageURI}
+	return Item{id, name, price, discount, nil, imageURI, false}
 }
