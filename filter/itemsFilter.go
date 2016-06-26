@@ -13,6 +13,7 @@ type ItemsFilter struct {
 	Discount     DiscountFilter
 	Requirements RequirementFilter
 	ImageURI     Condition
+	Hidden       Condition
 }
 
 //Filter is a method that filters a given slice of items given the ItemsFilters Conditions
@@ -100,5 +101,14 @@ func (filter *ItemsFilter) Valid(item items.Item) bool {
 		}
 	}
 	fmt.Println("Pass 6")
+	//Checking if there is a filter for Item Hidden
+	if filter.Hidden != emptyCon {
+		//Checking if Item matches ImageURI filter.
+		//IF it doesn't, return false.
+		if !filter.Hidden.Valid(item.Hidden) {
+			valid = false
+			return valid
+		}
+	}
 	return valid
 }

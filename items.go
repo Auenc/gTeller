@@ -19,6 +19,7 @@ type AddItemRequest struct {
 	DiscountID   string
 	Requirements []string
 	ImageURI     string
+	Hidden       bool
 }
 
 //RemoveItemsRequest represents the data that can be received by the RemoveItems api call
