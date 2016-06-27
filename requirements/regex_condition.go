@@ -38,6 +38,11 @@ func (con *RegexCondition) ID() string {
 	return con.id
 }
 
+//Targets returns the list of inputs that the condition can match
+func (con *RegexCondition) Targets() []UserInput {
+	return nil
+}
+
 //SetTargets takes the first element of the specified array and sets it to the regex Pattern provided the first element is a regex string
 func (con *RegexCondition) SetTargets(req string, targets []UserInput) error {
 	if len(targets) > 0 {

@@ -38,6 +38,12 @@ func (con *EqualCondition) Condition() interface{} {
 	return con.target
 }
 
+//Targets returns the list of inputs that the condition can match
+func (con *EqualCondition) Targets() []UserInput {
+
+	return nil
+}
+
 //SetTargets sets the target to the first element within the specified array of targets
 func (con *EqualCondition) SetTargets(req string, targets []UserInput) error {
 	if len(targets) > 0 {

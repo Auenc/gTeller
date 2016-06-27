@@ -39,6 +39,11 @@ func (con *ContainsCondition) Condition() interface{} {
 	return con.targets[0]
 }
 
+//Targets returns the list of inputs that the condition can match
+func (con *ContainsCondition) Targets() []UserInput {
+	return con.targets
+}
+
 //SetTargets sets the conditions targets to the specified list of strings
 func (con *ContainsCondition) SetTargets(req string, targets []UserInput) error {
 

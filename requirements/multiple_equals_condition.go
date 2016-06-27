@@ -39,6 +39,11 @@ func (con *MultipleEqualsCondition) Condition() interface{} {
 	return con.targets[0]
 }
 
+//Targets returns the list of inputs that the condition can match
+func (con *MultipleEqualsCondition) Targets() []UserInput {
+	return con.targets
+}
+
 //SetTargets sets the conditions targets to the specified list of strings
 func (con *MultipleEqualsCondition) SetTargets(req string, targets []UserInput) error {
 

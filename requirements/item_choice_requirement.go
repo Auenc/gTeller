@@ -126,6 +126,7 @@ func (req *ItemChoiceRequirement) Condition(con Condition) error {
 		return errors.New(er)
 	}
 	req.condition = con
+	req.choices = con.Targets()
 
 	return nil
 }

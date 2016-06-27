@@ -27,6 +27,7 @@ type Condition interface {
 	Valid(...interface{}) bool
 	Condition() interface{}
 	SetTargets(string, []UserInput) error
+	Targets() []UserInput
 	Name() string
 	Save() (string, error)
 	Load(string, []byte) error
