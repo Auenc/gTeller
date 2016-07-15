@@ -1,5 +1,7 @@
 package requirements
 
+import "encoding/json"
+
 //NewInputItem accepts a string representing the data from the user
 //and the string ID of the request
 func NewInputItem(itemID, req string) ItemInput {
@@ -20,4 +22,18 @@ func (in *ItemInput) For() string {
 //Data returns the data held by the TextInput object
 func (in *ItemInput) Data() interface{} {
 	return in.data
+}
+
+//Save generates a JSON string to represent the input
+func (in *ItemInput) Save() (string, error) {
+	var save string
+
+	bdata, err := json.Marshal(in)
+	if err != nil {
+		return save, err
+	}
+
+	save = string(bdata)
+
+	return save, nil
 }

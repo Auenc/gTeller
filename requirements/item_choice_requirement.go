@@ -150,10 +150,11 @@ func (req *ItemChoiceRequirement) Met() bool {
 	//Checking if the input was an option specified.
 	found := false
 	for _, tmp := range req.choices {
-		fmt.Println("checking", tmp.Data(), "against", req.data.Data())
+		fmt.Print("checking", tmp.Data(), "against", req.data.Data())
 		if reflect.DeepEqual(tmp.Data(), req.data.Data()) {
 			found = true
 		}
+		fmt.Println("\tFound=", found)
 	}
 	//If the input was not an option specified, input has not met requirement
 	if !found {
@@ -162,12 +163,61 @@ func (req *ItemChoiceRequirement) Met() bool {
 	}
 
 	//If requirement has a condition
-	if req.condition != nil {
+	/*	if req.condition != nil {
 		//If condition is not met
 		if !req.condition.Valid(req.data.Data()) {
+			fmt.Println("Item requirement condition failed")
 			return false
 		}
-	}
+	}*/
 	//Success
 	return true
+}
+
+func (req *ItemChoiceRequirement) Parseable() (ParseableRequirement, error) {
+	var parseable ParseableRequirement
+
+	//Save uuid
+	parseable.UUID = req.ID()
+	//Save type
+	parseable.Type = req.Type()
+
+	parseable.Reference = req.Reference()
+
+	//If we have a condition - save condition uuid
+	if req.GetCondition() != nil {
+		parseable.ConditionType = req.GetCondition().Type()
+		conSave, err := req.GetCondition().Save()
+		if err != nil {
+			return parseable, err
+		}
+		parseable.ConditionSave = conSave
+	}
+
+	//If we have input - save input
+	if req.GetData() != nil {
+		fmt.Println("Requirements::", req.Name(), "::Has data!")
+		inputSave, err := req.GetData().Save()
+		if err != nil {
+			return parseable, err
+		}
+		parseable.Data = inputSave
+	} else {
+		fmt.Println("Requirements::", req.Name(), "::Has no data!")
+	}
+
+	options := make([]string, len(req.choices))
+	for i, op := range req.choices {
+		inputSave, err := op.Save()
+		if err != nil {
+			return parseable, err
+		}
+		options[i] = inputSave
+	}
+
+	parseable.Options = options
+
+	fmt.Println("Requirements::TextRequirement::Providing data", parseable.Data)
+
+	return parseable, nil
 }

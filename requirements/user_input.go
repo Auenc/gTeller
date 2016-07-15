@@ -6,4 +6,6 @@ package requirements
 type UserInput interface {
 	For() string
 	Data() interface{}
+	Save() (string, error)
+	Load(string) error
 }

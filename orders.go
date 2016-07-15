@@ -16,7 +16,7 @@ type ListOrderResponse struct {
 
 type AddOrderRequest struct {
 	ShippingDetails shipping.ParseableShippingDetails
-	Items           []orders.OrderItem
+	Items           []orders.ParseableOrderItem
 	StatusID        string
 	Notes           string
 	Payed           bool

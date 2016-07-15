@@ -13,7 +13,7 @@ type ParseableOrder struct {
 	ID              string
 	FriendlyID      string
 	ShippingDetails shipping.ShippingDetails
-	Items           []OrderItem
+	Items           []ParseableOrderItem
 	Status          status.Status
 	Notes           string
 	Payed           bool
@@ -76,29 +76,54 @@ func (order *Order) Total() (float64, error) {
 
 func (order *Order) Parseable() (ParseableOrder, error) {
 	var p ParseableOrder
+	var emptyDis discounts.Discount
+	var parseDiscount discounts.ParseableDiscount
 	timeCreated := order.TimeCreated.Unix()
-	parseDiscount, err := order.Discount.Parsable()
-	if err != nil {
-		return p, err
+	if order.Discount != emptyDis {
+		tmp, err := order.Discount.Parsable()
+		if err != nil {
+			return p, err
+		}
+		parseDiscount = tmp
 	}
+
+	pOItems := make([]ParseableOrderItem, len(order.Items))
+	for i, el := range order.Items {
+		tmp, err := el.Parseable()
+		if err != nil {
+			return p, err
+		}
+		pOItems[i] = tmp
+	}
+
 	p = ParseableOrder{ID: order.ID, FriendlyID: order.FriendlyID,
-		ShippingDetails: order.ShippingDetails, Items: order.Items,
+		ShippingDetails: order.ShippingDetails, Items: pOItems,
 		Status: order.Status, Notes: order.Notes, Payed: order.Payed,
 		CustomerID: order.CustomerID, TimeCreated: timeCreated,
 		Discount: parseDiscount, Archived: order.Archived}
 	return p, nil
 }
 
-func (order *ParseableOrder) Parse() Order {
+func (order *ParseableOrder) Parse() (Order, error) {
+	var o Order
 	discount := order.Discount.Parse()
 	created := time.Unix(order.TimeCreated, 0)
 
-	orderA := Order{ID: order.ID, FriendlyID: order.FriendlyID,
-		ShippingDetails: order.ShippingDetails, Items: order.Items, Status: order.Status,
+	oItems := make([]OrderItem, len(order.Items))
+	for i, el := range order.Items {
+		tmp, err := el.Parse()
+		if err != nil {
+			return o, err
+		}
+		oItems[i] = tmp
+	}
+
+	o = Order{ID: order.ID, FriendlyID: order.FriendlyID,
+		ShippingDetails: order.ShippingDetails, Items: oItems, Status: order.Status,
 		Notes: order.Notes, Payed: order.Payed, CustomerID: order.CustomerID,
 		TimeCreated: created, Archived: order.Archived, Discount: discount}
 
-	return orderA
+	return o, nil
 }
 
 func (order *Order) Info() (OrderInfo, error) {

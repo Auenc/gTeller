@@ -1,7 +1,5 @@
 package filter
 
-import "fmt"
-
 const (
 	ConditionEquals = 1
 )
@@ -16,7 +14,7 @@ func (con *Condition) Valid(n interface{}) bool {
 	switch con.Type {
 	case ConditionEquals:
 		result = n == con.Value
-		fmt.Println(n, "==", con.Value, "=", result)
+		//fmt.Println(n, "==", con.Value, "=", result)
 		break
 	}
 	return result
