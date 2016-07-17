@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/items"
+import "github.com/auenc/gTeller/items"
 
 type ItemOptionFilter struct {
 	ID    Condition

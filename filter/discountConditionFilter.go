@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"github.com/auenc/gTeller-core/discounts"
+	"github.com/auenc/gTeller/discounts"
 )
 
 type DiscountConditionFilter struct {

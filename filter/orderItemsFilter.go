@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/orders"
+import "github.com/auenc/gTeller/orders"
 
 type OrderItemFilter struct {
 	UUID     Condition

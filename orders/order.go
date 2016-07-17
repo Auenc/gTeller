@@ -5,7 +5,7 @@ import (
 
 	"github.com/auenc/gTeller/discounts"
 	"github.com/auenc/gTeller/shipping"
-	"github.com/auenc/gTeller/statuses"
+	"github.com/auenc/gTeller/status"
 )
 
 //ParseableOrder is a data object that can be parsed into an Order object.

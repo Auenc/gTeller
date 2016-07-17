@@ -1,7 +1,7 @@
 package filter
 
 import (
-	statuses "github.com/auenc/gTeller-core/statuses"
+	statuses "github.com/auenc/gTeller/status"
 )
 
 type StatusFilter struct {

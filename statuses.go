@@ -4,7 +4,7 @@ import (
 	"github.com/auenc/gTeller/email"
 	"github.com/auenc/gTeller/filter"
 	"github.com/auenc/gTeller/shipping"
-	"github.com/auenc/gTeller/statuses"
+	"github.com/auenc/gTeller/status"
 )
 
 //ShippingType objects

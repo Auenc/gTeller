@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/requirements"
+import "github.com/auenc/gTeller/requirements"
 
 type RequirementConditionFilter struct {
 	Type      Condition

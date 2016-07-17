@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/email"
+import "github.com/auenc/gTeller/email"
 
 type EmailTemplateFilter struct {
 	ID          Condition

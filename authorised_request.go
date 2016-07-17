@@ -29,6 +29,18 @@ type authorisedData struct {
 	RequestData interface{}
 }
 
+//Checksum calls the checksum action of the specified end point
+func (req *AuthorisedRequest) Checksum() (Response, error) {
+	var response Response
+
+	if req.URL == "" {
+		return response, errors.New("Endpoint not defined")
+	}
+	req.URL = req.URL + "checksum"
+
+	return req.Send()
+}
+
 //List calls the list action of the specified end point
 //If an end point is not specified, an error will be returned
 func (req *AuthorisedRequest) List() (Response, error) {

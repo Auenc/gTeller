@@ -3,7 +3,7 @@ package filter
 import (
 	"fmt"
 
-	"github.com/auenc/gTeller-core/orders"
+	"github.com/auenc/gTeller/orders"
 )
 
 type OrderFilter struct {

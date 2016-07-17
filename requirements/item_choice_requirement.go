@@ -62,7 +62,7 @@ func (req *ItemChoiceRequirement) SetOptions(options []UserInput) error {
 	if req.GetCondition() != nil {
 		cond := req.GetCondition()
 
-		fmt.Printf("Giving condition targets %v\n", options)
+		//	fmt.Printf("Giving condition targets %v\n", options)
 		err := cond.SetTargets(req.ID(), options)
 		if err != nil {
 			return err
@@ -150,15 +150,15 @@ func (req *ItemChoiceRequirement) Met() bool {
 	//Checking if the input was an option specified.
 	found := false
 	for _, tmp := range req.choices {
-		fmt.Print("checking", tmp.Data(), "against", req.data.Data())
+		//	fmt.Print("checking", tmp.Data(), "against", req.data.Data())
 		if reflect.DeepEqual(tmp.Data(), req.data.Data()) {
 			found = true
 		}
-		fmt.Println("\tFound=", found)
+		//	fmt.Println("\tFound=", found)
 	}
 	//If the input was not an option specified, input has not met requirement
 	if !found {
-		fmt.Println("Not found option", req.data.Data())
+		//	fmt.Println("Not found option", req.data.Data())
 		return false
 	}
 
@@ -196,14 +196,14 @@ func (req *ItemChoiceRequirement) Parseable() (ParseableRequirement, error) {
 
 	//If we have input - save input
 	if req.GetData() != nil {
-		fmt.Println("Requirements::", req.Name(), "::Has data!")
+		//	fmt.Println("Requirements::", req.Name(), "::Has data!")
 		inputSave, err := req.GetData().Save()
 		if err != nil {
 			return parseable, err
 		}
 		parseable.Data = inputSave
 	} else {
-		fmt.Println("Requirements::", req.Name(), "::Has no data!")
+		//	fmt.Println("Requirements::", req.Name(), "::Has no data!")
 	}
 
 	options := make([]string, len(req.choices))
@@ -217,7 +217,7 @@ func (req *ItemChoiceRequirement) Parseable() (ParseableRequirement, error) {
 
 	parseable.Options = options
 
-	fmt.Println("Requirements::TextRequirement::Providing data", parseable.Data)
+	//	fmt.Println("Requirements::TextRequirement::Providing data", parseable.Data)
 
 	return parseable, nil
 }

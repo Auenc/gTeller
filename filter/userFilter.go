@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/users"
+import "github.com/auenc/gTeller/users"
 
 type UserFilter struct {
 	UUID     Condition

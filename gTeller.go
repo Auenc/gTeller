@@ -12,6 +12,10 @@ const (
 	RequirementURI     = "requirement/"
 )
 
+type Checksum struct {
+	Checksum string
+}
+
 //GTeller is an object that holds config values and grants access to methods to
 //use the GTeller api
 type GTeller struct {

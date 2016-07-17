@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/auenc/gTeller-core/discounts"
+import "github.com/auenc/gTeller/discounts"
 
 type DiscountFilter struct {
 	ID          Condition
